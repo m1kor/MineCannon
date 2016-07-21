@@ -2,8 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Player : MonoBehaviour
-{
+public class Player : MonoBehaviour {
 	public Transform cameraTransform, floorColliderTransform, bg1Transform, bg2Transform, bg3Transform, platformTransform, leftWallColliderTransform;
 	public TextMesh scoreTextMesh, pigsTextMesh, gameOverTextMesh, scoreNotificationTextMesh, highScoreTextMesh;
 	public GameObject baloonTNTPrefab, tntPrefab, cactusPrefab, pigPrefab, springPrefab, lava1Prefab, lava2Prefab, baloonPlatformPrefab, forceLine, btnRetry, btnReturnToMenu;
@@ -19,14 +18,12 @@ public class Player : MonoBehaviour
 	private Vector3 bg1Pos, bg2Pos, bg3Pos, cameraPos, playerPos;
 	private Quaternion platformRotation;
 
-	void Awake ()
-	{
+	void Awake () {
 		Application.targetFrameRate = 60;
-    }
+	}
 
-	void Start()
-	{
- 		screenW = Screen.width / (Screen.height * 0.5f) * 10.0f;
+	void Start() {
+		screenW = Screen.width / (Screen.height * 0.5f) * 10.0f;
 		leftWallColliderTransform.Translate(Vector3.left * screenW * 0.5f, Space.World);
 		bgW = 846.0f / 32.0f;
 		bg1Transform.position = new Vector3((bgW - screenW) * 0.5f, 0.0f, 0.0f);
@@ -46,8 +43,7 @@ public class Player : MonoBehaviour
 		ToggleMainMenu();
 	}
 
-	public void ToggleMainMenu()
-	{
+	public void ToggleMainMenu() {
 		mainMenu = true;
 		scoreTextMesh.renderer.enabled = false;
 		foreach (GameObject go in GameObject.FindGameObjectsWithTag("Controls"))
@@ -83,8 +79,7 @@ public class Player : MonoBehaviour
 		GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-	public void ToggleGame()
-	{
+	public void ToggleGame() {
 		mainMenu = false;
 		scoreTextMesh.renderer.enabled = true;
 		foreach (GameObject go in GameObject.FindGameObjectsWithTag("Controls"))
@@ -122,20 +117,18 @@ public class Player : MonoBehaviour
 		GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-    private string ScoreAsString(int s)
-    {
-        if (s < 10)
-            return "000" + s.ToString();
-        else if (s < 100)
-            return "00" + s.ToString();
-        else if (s < 1000)
-            return "0" + s.ToString();
-        else
-            return s.ToString();
-    }
+	private string ScoreAsString(int s) {
+		if (s < 10)
+			return "000" + s.ToString();
+		else if (s < 100)
+			return "00" + s.ToString();
+		else if (s < 1000)
+			return "0" + s.ToString();
+		else
+			return s.ToString();
+	}
 
-	public void GameOver()
-	{
+	public void GameOver() {
 		GetComponent<Rigidbody2D>().isKinematic = true;
 		int score = Mathf.FloorToInt(distanceTraveled);
 		if (score > PlayerPrefs.GetInt("HighScore", 0))
@@ -149,41 +142,31 @@ public class Player : MonoBehaviour
 		btnReturnToMenu.renderer.enabled = true;
 	}
 
-	public void Pig()
-	{
+	public void Pig() {
 		PlayerPrefs.SetInt("Pigs", PlayerPrefs.GetInt("Pigs", 0) + 1);
 	}
 
-	void FixedUpdate()
-    {
-		if (!mainMenu)
-		{
+	void FixedUpdate() {
+		if (!mainMenu) {
 			floorColliderTransform.position = new Vector3 (transform.position.x, -8.194516f, -2.0f);
 			if (launched && GetComponent<Rigidbody2D>().velocity.magnitude < 0.01f)
 				GameOver();
 		}
 	}
 
-    void Update()
-    {
-		if (!mainMenu)
-	    {
-			if (!launched && !aimed)
-			{
-				if (platformTransform.rotation.eulerAngles.z < rotEdge)
-				{
+	void Update() {
+		if (!mainMenu) {
+			if (!launched && !aimed) {
+				if (platformTransform.rotation.eulerAngles.z < rotEdge) {
 					platformTransform.Rotate(Vector3.forward, rotSpeed * Time.deltaTime);
-					if (platformTransform.rotation.eulerAngles.z >= rotEdge)
-					{
+					if (platformTransform.rotation.eulerAngles.z >= rotEdge) {
 						rotEdge = Random.Range(5.0f, platformTransform.rotation.eulerAngles.z - 10.0f);
 						rotSpeed = Random.Range(35.0f, 135.0f);
 					}
 				}
-				else
-				{
+				else {
 					platformTransform.Rotate(-Vector3.forward, rotSpeed * Time.deltaTime);
-					if (platformTransform.rotation.eulerAngles.z <= rotEdge)
-					{
+					if (platformTransform.rotation.eulerAngles.z <= rotEdge) {
 						rotEdge = Random.Range(platformTransform.rotation.eulerAngles.z + 10.0f, 65.0f);
 						rotSpeed = Random.Range(35.0f, 135.0f);
 					}
@@ -194,11 +177,9 @@ public class Player : MonoBehaviour
 			traveled += Mathf.Max(0.0f, cameraTransform.position.x - prevCameraX);
 			distanceTraveled += Mathf.Max(0.0f, cameraTransform.position.x - prevCameraX);
 			scoreTextMesh.text = ScoreAsString(Mathf.FloorToInt(distanceTraveled));
-			if (traveled >= bgW)
-			{
+			if (traveled >= bgW) {
 				traveled -= bgW;
-				switch (addBg)
-				{
+				switch (addBg) {
 					case 1:
 						bg1Transform.position = new Vector3(bg1Transform.position.x + bgW * 3.0f, 0.0f, 0.0f);
 						break;
@@ -214,22 +195,18 @@ public class Player : MonoBehaviour
 					addBg = 1;
 			}
 			nextSpawn -= Mathf.Max(0.0f, cameraTransform.position.x - prevCameraX);
-			if (nextSpawn < 0.0f)
-			{
+			if (nextSpawn < 0.0f) {
 				nextSpawn = Random.Range(25.0f, 125.0f);
 				GameObject powerUp = null;
 				bool setPos = true;
-				switch (Random.Range(0, 500) % 25)
-				{
+				switch (Random.Range(0, 500) % 25) {
 				case 1: // Pig
 					powerUp = (GameObject)Instantiate(pigPrefab);
 					break;
 				default:
-					switch (Random.Range(0, 99) % 4)
-					{
+					switch (Random.Range(0, 99) % 4) {
 					case 0: // TNT
-						switch (Random.Range(0, 99) % 3)
-						{
+						switch (Random.Range(0, 99) % 3) {
 						case 0:
 							powerUp = (GameObject)Instantiate(baloonTNTPrefab);
 							setPos = false;
@@ -246,8 +223,7 @@ public class Player : MonoBehaviour
 						powerUp = (GameObject)Instantiate(cactusPrefab);
 						break;
 					case 2: // Spring
-						switch (Random.Range(0, 99) % 5)
-						{
+						switch (Random.Range(0, 99) % 5) {
 						case 1: // Platform
 							powerUp = (GameObject)Instantiate(baloonPlatformPrefab);
 							setPos = false;
@@ -261,8 +237,7 @@ public class Player : MonoBehaviour
 						}
 						break;
 					case 3: // Lava
-						switch (Random.Range(0, 99) % 2)
-						{
+						switch (Random.Range(0, 99) % 2) {
 						case 0:
 							powerUp = (GameObject)Instantiate(lava1Prefab);
 							break;
@@ -282,8 +257,7 @@ public class Player : MonoBehaviour
 			foreach (GameObject go in powerUps)
 				if (go.transform.position.x < cameraTransform.position.x - 60.0f)
 					toRemove.Add(go);
-			foreach (GameObject go in toRemove)
-			{
+			foreach (GameObject go in toRemove) {
 				powerUps.Remove(go);
 				Destroy(go);
 			}

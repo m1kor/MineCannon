@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PowerUp : MonoBehaviour
-{
+public class PowerUp : MonoBehaviour {
 	public Sprite explosion, spring1, spring2, deadPig;
 	public int kind;
 	public Transform platformTransform;
@@ -12,33 +11,27 @@ public class PowerUp : MonoBehaviour
 	private Transform playerTransform;
 	private SpriteRenderer playerSpriteRenderer;
 
-	void Start()
-	{
+	void Start() {
 		zoomOut = drown = onBack = false;
 		isEnabled = true;
 		floating = true;
 		tvar = 1.0f;
 	}
 
-	IEnumerator Hide()
-	{
+	IEnumerator Hide() {
 		yield return new WaitForSeconds(0.25f);
 		GetComponent<SpriteRenderer>().enabled = false;
 	}
 
-	IEnumerator Reverse()
-	{
+	IEnumerator Reverse() {
 		yield return new WaitForSeconds(0.25f);
 		GetComponent<SpriteRenderer>().sprite = spring1;
 	}
 
-	void OnTriggerEnter2D(Collider2D coll)
-	{
-		if (isEnabled && coll.gameObject.tag == "Player")
-		{
+	void OnTriggerEnter2D(Collider2D coll) {
+		if (isEnabled && coll.gameObject.tag == "Player") {
 			Rigidbody2D rb = null;
-			switch (kind)
-			{
+			switch (kind) {
 			case 0: // TNT
 				rb = coll.gameObject.GetComponent<Rigidbody2D>();
 				rb.AddForceAtPosition(new Vector2(1.0f, 0.8f).normalized * rb.mass * 1500.0f, new Vector2(coll.gameObject.transform.position.x - 1.75f, coll.gameObject.transform.position.y));
@@ -95,41 +88,34 @@ public class PowerUp : MonoBehaviour
 		}
 	}
 
-	void Update()
-	{
-		if (zoomOut)
-		{
+	void Update() {
+		if (zoomOut) {
 			tvar -= Time.deltaTime * 2.5f;
-			if (tvar < 0.0f)
-			{
+			if (tvar < 0.0f) {
 				zoomOut = false;
 				GetComponent<SpriteRenderer>().enabled = false;
 			}
 			transform.localScale = Vector3.one * tvar;
 		}
-		else if (drown)
-		{
+		else if (drown) {
 			playerTransform.Translate(Vector3.down * Time.deltaTime * 10.0f, Space.World);
 			tvar -= Time.deltaTime * 3.0f;
 			playerSpriteRenderer.color = new Color(1.0f, 1.0f, 1.0f, tvar);
 			if (tvar < 0.0f)
 				drown = false;
 		}
-		else if (onBack)
-		{
+		else if (onBack) {
 			tvar -= Time.deltaTime;
 			GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f - tvar * 4.0f, 1.0f - tvar * 4.0f);
 			transform.RotateAround(transform.position, Vector3.forward * ((onBackRand) ? 1.0f : -1.0f), Time.deltaTime * 800.0f);
 			transform.Translate(Vector3.up * Time.deltaTime * 12.5f, Space.World);
-			if (tvar < 0.0f)
-			{
+			if (tvar < 0.0f) {
 				GetComponent<SpriteRenderer>().color = Color.red;
 				GetComponent<SpriteRenderer>().enabled = false;
 				onBack = false;
 			}
 		}
-		if ((kind == 5 || kind == 6) && floating)
-		{
+		if ((kind == 5 || kind == 6) && floating) {
 			tvar += Time.deltaTime * 3.0f;
 			if (tvar >= Mathf.PI)
 				tvar -= Mathf.PI;
